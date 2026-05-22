@@ -1,14 +1,14 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [Header("Movimento")]
     public float speed = 5f;
-    public float jumpHeight = 2f;
-    public float gravity = -9.81f;
-
-    [Header("Mouse")]
     public float mouseSensitivity = 100f;
+
+    [Header("Pulo")]
+    public float gravity = -9.81f;
+    public float jumpHeight = 2f;
 
     public Transform cameraTransform;
 
@@ -29,14 +29,17 @@ public class PlayerMovement : MonoBehaviour
     {
         Move();
         MouseLook();
+        Jump();
     }
 
     void Move()
     {
-        float x = Input.GetAxis("Horizontal");
-        float z = Input.GetAxis("Vertical");
+        Vector2 input = new Vector2(
+            (Keyboard.current.dKey.isPressed ? 1 : 0) - (Keyboard.current.aKey.isPressed ? 1 : 0),
+            (Keyboard.current.wKey.isPressed ? 1 : 0) - (Keyboard.current.sKey.isPressed ? 1 : 0)
+        );
 
-        Vector3 move = transform.right * x + transform.forward * z;
+        Vector3 move = transform.right * input.x + transform.forward * input.y;
 
         controller.Move(move * speed * Time.deltaTime);
 
@@ -45,28 +48,29 @@ public class PlayerMovement : MonoBehaviour
             velocity.y = -2f;
         }
 
-        if (Input.GetButtonDown("Jump") && controller.isGrounded)
-        {
-            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
-        }
-
         velocity.y += gravity * Time.deltaTime;
 
         controller.Move(velocity * Time.deltaTime);
     }
 
+    void Jump()
+    {
+        if (Keyboard.current.spaceKey.wasPressedThisFrame && controller.isGrounded)
+        {
+            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+        }
+    }
+
     void MouseLook()
     {
-        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
+        Vector2 mouseDelta = Mouse.current.delta.ReadValue() * mouseSensitivity * Time.deltaTime;
 
-        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
-
-        xRotation -= mouseY;
+        xRotation -= mouseDelta.y;
 
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
         cameraTransform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
 
-        transform.Rotate(Vector3.up * mouseX);
+        transform.Rotate(Vector3.up * mouseDelta.x);
     }
 }
