@@ -11,7 +11,7 @@ public class PickupSystem : MonoBehaviour
 
     void Update()
     {
-        // PEGAR OBJETO
+        // PEGAR
         if (Keyboard.current.eKey.wasPressedThisFrame)
         {
             if (heldObject == null)
@@ -20,7 +20,7 @@ public class PickupSystem : MonoBehaviour
             }
         }
 
-        // SOLTAR OBJETO
+        // SOLTAR
         if (Keyboard.current.qKey.wasPressedThisFrame)
         {
             if (heldObject != null)
@@ -32,32 +32,30 @@ public class PickupSystem : MonoBehaviour
 
     void Pickup()
     {
-        // Raycast no centro da tela
-        Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+        Ray ray = Camera.main.ViewportPointToRay(
+        new Vector3(0.5f, 0.5f, 0));
 
         RaycastHit hit;
 
         if (Physics.Raycast(ray, out hit, pickupRange))
         {
-            Debug.Log("Acertou: " + hit.collider.name);
-
-            // Verifica se tem a tag Pickup
             if (hit.collider.CompareTag("Pickup"))
             {
                 heldObject = hit.collider.gameObject;
 
-                Rigidbody rb = heldObject.GetComponent<Rigidbody>();
+                Rigidbody rb =
+                heldObject.GetComponent<Rigidbody>();
 
                 if (rb != null)
                 {
                     rb.isKinematic = true;
                 }
 
-                // Move pro HoldPoint
-                heldObject.transform.position = holdPoint.position;
+                heldObject.transform.position =
+                holdPoint.position;
 
-                // Faz virar filho do HoldPoint
-                heldObject.transform.parent = holdPoint;
+                heldObject.transform.parent =
+                holdPoint;
             }
         }
     }
@@ -66,13 +64,26 @@ public class PickupSystem : MonoBehaviour
     {
         Rigidbody rb = heldObject.GetComponent<Rigidbody>();
 
-        // Remove da mão
         heldObject.transform.parent = null;
 
         if (rb != null)
         {
             rb.isKinematic = false;
         }
+
+        heldObject = null;
+    }
+
+    // VERIFICA SE ESTÁ SEGURANDO
+    public bool EstaSegurandoCaixa()
+    {
+        return heldObject != null;
+    }
+
+    // DESTROI CAIXA ENTREGUE
+    public void DestruirCaixa()
+    {
+        Destroy(heldObject);
 
         heldObject = null;
     }
