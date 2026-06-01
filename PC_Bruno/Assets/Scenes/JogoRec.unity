@@ -13740,7 +13740,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4a4ebc0999064543b079e5173df3271, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DayNightCycle
-  rotationSpeed: 2
+  rotationSpeed: 1
 --- !u!1 &867978179
 GameObject:
   m_ObjectHideFlags: 0
