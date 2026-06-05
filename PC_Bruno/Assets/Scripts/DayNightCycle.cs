@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class DayNightCycle : MonoBehaviour
 {
-    public float rotationSpeed = 2f;
+    public float rotationSpeed = 1f;
 
     void Update()
     {
