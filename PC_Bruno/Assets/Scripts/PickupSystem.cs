@@ -7,6 +7,8 @@ public class PickupSystem : MonoBehaviour
 
     public Transform holdPoint;
 
+    public Inventory inventory;
+
     private GameObject heldObject;
 
     void Update()
@@ -33,7 +35,7 @@ public class PickupSystem : MonoBehaviour
     void Pickup()
     {
         Ray ray = Camera.main.ViewportPointToRay(
-        new Vector3(0.5f, 0.5f, 0));
+            new Vector3(0.5f, 0.5f, 0));
 
         RaycastHit hit;
 
@@ -43,19 +45,17 @@ public class PickupSystem : MonoBehaviour
             {
                 heldObject = hit.collider.gameObject;
 
-                Rigidbody rb =
-                heldObject.GetComponent<Rigidbody>();
+                inventory.AddItem();
+
+                Rigidbody rb = heldObject.GetComponent<Rigidbody>();
 
                 if (rb != null)
                 {
                     rb.isKinematic = true;
                 }
 
-                heldObject.transform.position =
-                holdPoint.position;
-
-                heldObject.transform.parent =
-                holdPoint;
+                heldObject.transform.position = holdPoint.position;
+                heldObject.transform.parent = holdPoint;
             }
         }
     }
@@ -71,6 +71,8 @@ public class PickupSystem : MonoBehaviour
             rb.isKinematic = false;
         }
 
+        inventory.RemoveItem();
+
         heldObject = null;
     }
 
@@ -83,6 +85,8 @@ public class PickupSystem : MonoBehaviour
     // DESTROI CAIXA ENTREGUE
     public void DestruirCaixa()
     {
+        inventory.RemoveItem();
+
         Destroy(heldObject);
 
         heldObject = null;
