@@ -4,31 +4,23 @@ using UnityEngine.InputSystem;
 public class PickupSystem : MonoBehaviour
 {
     public float pickupRange = 3f;
-
     public Transform holdPoint;
-
     public Inventory inventory;
 
     private GameObject heldObject;
 
     void Update()
     {
-        // PEGAR
         if (Keyboard.current.eKey.wasPressedThisFrame)
         {
             if (heldObject == null)
-            {
                 Pickup();
-            }
         }
 
-        // SOLTAR
         if (Keyboard.current.qKey.wasPressedThisFrame)
         {
             if (heldObject != null)
-            {
                 Drop();
-            }
         }
     }
 
@@ -45,14 +37,15 @@ public class PickupSystem : MonoBehaviour
             {
                 heldObject = hit.collider.gameObject;
 
-                inventory.AddItem();
+                if (inventory != null)
+                    inventory.AddItem();
+                else
+                    Debug.LogError("Inventory não conectado no PickupSystem!");
 
                 Rigidbody rb = heldObject.GetComponent<Rigidbody>();
 
                 if (rb != null)
-                {
                     rb.isKinematic = true;
-                }
 
                 heldObject.transform.position = holdPoint.position;
                 heldObject.transform.parent = holdPoint;
@@ -67,28 +60,25 @@ public class PickupSystem : MonoBehaviour
         heldObject.transform.parent = null;
 
         if (rb != null)
-        {
             rb.isKinematic = false;
-        }
 
-        inventory.RemoveItem();
+        if (inventory != null)
+            inventory.RemoveItem();
 
         heldObject = null;
     }
 
-    // VERIFICA SE ESTÁ SEGURANDO
     public bool EstaSegurandoCaixa()
     {
         return heldObject != null;
     }
 
-    // DESTROI CAIXA ENTREGUE
     public void DestruirCaixa()
     {
-        inventory.RemoveItem();
+        if (inventory != null)
+            inventory.RemoveItem();
 
         Destroy(heldObject);
-
         heldObject = null;
     }
 }
