@@ -9,11 +9,16 @@ public class MainMenu : MonoBehaviour
         SceneManager.LoadScene("JogoRec");
     }
 
+    // Abrir tela de controles
+    public void OpenControls()
+    {
+        SceneManager.LoadScene("Game");
+    }
+
     // Sair do jogo
     public void QuitGame()
     {
         Debug.Log("Saiu do jogo");
-
         Application.Quit();
     }
 }
