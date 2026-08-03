@@ -6,7 +6,7 @@ public class MainMenu : MonoBehaviour
     // Começar jogo
     public void StartGame()
     {
-        SceneManager.LoadScene("Game");
+        SceneManager.LoadScene("JogoRec");
     }
 
     // Sair do jogo
