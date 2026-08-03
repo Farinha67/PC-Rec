@@ -19,6 +19,7 @@ public class NPCPedido : MonoBehaviour
 
     private bool esperandoNovoPedido = false;
 
+
     void Start()
     {
         pickupSystem = FindFirstObjectByType<PickupSystem>();
@@ -31,6 +32,7 @@ public class NPCPedido : MonoBehaviour
         AtualizarMissao();
     }
 
+
     void Update()
     {
         if (playerPerto && Input.GetKeyDown(KeyCode.F))
@@ -38,6 +40,7 @@ public class NPCPedido : MonoBehaviour
             EntregarCaixa();
         }
     }
+
 
     void AtualizarMissao()
     {
@@ -48,10 +51,13 @@ public class NPCPedido : MonoBehaviour
         }
         else
         {
-            quantidadeNecessaria = 5;
+            // Depois da primeira missão:
+            // 3 caixas dão R$150
+            quantidadeNecessaria = 3;
             recompensa = 150;
         }
     }
+
 
     void EntregarCaixa()
     {
@@ -61,31 +67,43 @@ public class NPCPedido : MonoBehaviour
             return;
         }
 
+
         if (pickupSystem == null)
         {
             textoMissao.text = "Erro: PickupSystem não encontrado!";
             return;
         }
 
+
         if (pickupSystem.EstaSegurandoCaixa())
         {
             pickupSystem.DestruirCaixa();
 
+
             quantidadeEntregue++;
+
 
             if (quantidadeEntregue >= quantidadeNecessaria)
             {
                 Dinheiro.instance.AdicionarDinheiro(recompensa);
 
-                textoMissao.text = "Missão completa! +$" + recompensa;
+
+                textoMissao.text =
+                    "Missão completa! +$" + recompensa;
+
 
                 quantidadeEntregue = 0;
+
 
                 StartCoroutine(NovoPedido());
             }
             else
             {
-                textoMissao.text = "Entregue: " + quantidadeEntregue + "/" + quantidadeNecessaria;
+                textoMissao.text =
+                    "Entregue: " +
+                    quantidadeEntregue +
+                    "/" +
+                    quantidadeNecessaria;
             }
         }
         else
@@ -94,22 +112,34 @@ public class NPCPedido : MonoBehaviour
         }
     }
 
+
     IEnumerator NovoPedido()
     {
         esperandoNovoPedido = true;
 
-        textoMissao.text = "Volte em 30 segundos!";
+
+        textoMissao.text =
+            "Volte em 30 segundos!";
+
 
         yield return new WaitForSeconds(30f);
 
+
         nivelMissao++;
+
 
         AtualizarMissao();
 
-        textoMissao.text = "Novo pedido: " + quantidadeNecessaria + " caixas!";
+
+        textoMissao.text =
+            "Novo pedido: " +
+            quantidadeNecessaria +
+            " caixas!";
+
 
         esperandoNovoPedido = false;
     }
+
 
     private void OnTriggerEnter(Collider other)
     {
@@ -117,18 +147,24 @@ public class NPCPedido : MonoBehaviour
         {
             playerPerto = true;
 
+
             if (!esperandoNovoPedido)
             {
-                textoMissao.text = "Preciso de " + quantidadeNecessaria + " caixas!";
+                textoMissao.text =
+                    "Preciso de " +
+                    quantidadeNecessaria +
+                    " caixas!";
             }
         }
     }
+
 
     private void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Player"))
         {
             playerPerto = false;
+
             textoMissao.text = "";
         }
     }
